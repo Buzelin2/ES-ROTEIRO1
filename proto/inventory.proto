@@ -1,20 +1,38 @@
 syntax = "proto3";
 
-service InventoryService {
-    rpc SearchAllProducts(Empty) returns (ProductsResponse) {}
+/**
+ * Inventory gRPC definitions
+ */
+package inventory;
+
+import "google/protobuf/empty.proto";
+
+// ──────────────── MESSAGES ────────────────
+/** Request containing only the product ID. */
+message ProductIdRequest {
+  int32 id = 1;
 }
 
-message Empty{}
-
+/** One single product. */
 message ProductResponse {
-    int32 id = 1;
-    string name = 2;
-    int32 quantity = 3;
-    float price = 4;
-    string photo = 5;
-    string author = 6;
+  int32  id       = 1;
+  string name     = 2;
+  int32  quantity = 3;
+  float  price    = 4;
+  string photo    = 5;
+  string author   = 6;
 }
 
+/** List of products. */
 message ProductsResponse {
-    repeated ProductResponse products = 1;
+  repeated ProductResponse products = 1;
+}
+
+// ──────────────── SERVICE ────────────────
+service InventoryService {
+  /** Returns every product in stock. */
+  rpc SearchAllProducts(google.protobuf.Empty) returns (ProductsResponse);
+
+  /** Returns a single product given its ID. */
+  rpc SearchProductByID(ProductIdRequest)      returns (ProductResponse);
 }
